@@ -1,4 +1,4 @@
-[gd_scene load_steps=33 format=4 uid="uid://y2pwcswwqdy5"]
+[gd_scene load_steps=34 format=4 uid="uid://y2pwcswwqdy5"]
 
 [ext_resource type="Script" path="res://Scripts/Levels/test.gd" id="1_3f4iv"]
 [ext_resource type="Script" path="res://addons/func_godot/src/map/func_godot_map.gd" id="1_m38hc"]
@@ -9,6 +9,7 @@
 [ext_resource type="PackedScene" uid="uid://cxaqluit7bsgx" path="res://Scenes/Entities/dummy.tscn" id="6_haj1v"]
 [ext_resource type="Script" path="res://Scripts/spawner.gd" id="9_pd484"]
 [ext_resource type="PackedScene" uid="uid://0h8u27l10o2i" path="res://Scenes/Menus/paused.tscn" id="9_x51du"]
+[ext_resource type="PackedScene" uid="uid://n8bnh4p88hv7" path="res://Scenes/save_point.tscn" id="10_kc3le"]
 
 [sub_resource type="ArrayMesh" id="ArrayMesh_n37gs"]
 _surfaces = [{
@@ -217,6 +218,9 @@ transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 4.21847, 0, 3)
 wait_time = 15.0
 
 [node name="Pause Menu" parent="." instance=ExtResource("9_x51du")]
+
+[node name="Save Point" parent="." instance=ExtResource("10_kc3le")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -2.448, 0.1, 6.697)
 
 [connection signal="dead" from="Player" to="." method="_on_player_dead"]
 [connection signal="body_entered" from="Spawner" to="Spawner" method="_on_body_entered"]

@@ -1,6 +1,9 @@
 extends Node3D
 var paused_by_pause_menu : bool = false
 
+func _ready() -> void:
+	Playerstatus.load_game()
+
 func _on_player_dead() -> void:
 	$Player/CamNode3D/CanvasLayer/Deathscreen.visible = true
 	get_tree().paused = true

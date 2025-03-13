@@ -59,11 +59,23 @@ func update_stats(player, helmet, chest, gloves, legs, weapon, shield, bow):
 	protstab = updated_protstab
 	display_damage = roundi(item_damage + (strength / 2))
 
+func save():
+	var save_dictionary = {
+		"filename" : "Playerstatus",
+		"healthcurrent" : healthcurrent,
+		"healthmax" : healthmax,
+		"strength" : strength
+		}
+	return save_dictionary
+
 func save_all(player):
 	var current_inven = player.inventory
 	var current_equiped = player.equipment
 	var save_file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
 	var save_nodes = get_tree().get_nodes_in_group("Persist")
+	var self_save_data = save()
+	var self_json_string = JSON.stringify(self_save_data)
+	save_file.store_line(self_json_string)
 	if ResourceSaver.save(current_inven,"res://Scripts/Inventory/player_inven.tres") != OK:
 		print("le fu")
 	if ResourceSaver.save(current_equiped,"res://Scripts/Inventory/player_equipped.tres") != OK:
@@ -124,13 +136,18 @@ func load_game():
 		var node_data = json.data
 
 		# Firstly, we need to create the object and add it to the tree and set its position.
-		var new_object = load(node_data["filename"]).instantiate()
-		get_node(node_data["parent"]).add_child(new_object)
-		new_object.position = Vector3(node_data["pos_x"], node_data["pos_y"], node_data["pos_z"])
+		if node_data["filename"] == "Playerstatus":
+			healthcurrent = node_data["healthcurrent"]
+			healthmax = node_data["healthmax"]
+			strength = node_data["strength"]
+		else:
+			var new_object = load(node_data["filename"]).instantiate()
+			get_node(node_data["parent"]).add_child(new_object)
+			new_object.position = Vector3(node_data["pos_x"], node_data["pos_y"], node_data["pos_z"])
 
-		# Now we set the remaining variables.
-		for i in node_data.keys():
-			if i == "filename" or i == "parent" or i == "pos_x" or i == "pos_y" or i == "pos_z":
-				continue
-			new_object.set(i, node_data[i])
+			# Now we set the remaining variables.
+			for i in node_data.keys():
+				if i == "filename" or i == "parent" or i == "pos_x" or i == "pos_y" or i == "pos_z":
+					continue
+				new_object.set(i, node_data[i])
 	loading_image.queue_free()

@@ -1,4 +1,4 @@
-[gd_resource type="Resource" script_class="inv" load_steps=32 format=3]
+[gd_resource type="Resource" script_class="inv" load_steps=33 format=3]
 
 [ext_resource type="Script" path="res://Scripts/Inventory/inven_slot.gd" id="1_uvjgo"]
 [ext_resource type="Resource" path="res://Scripts/Inventory/debug sword.tres" id="3_06nge"]
@@ -6,6 +6,7 @@
 [ext_resource type="Resource" path="res://Scripts/Inventory/debug shield.tres" id="4_ljvdk"]
 [ext_resource type="Resource" path="res://Scripts/Inventory/debug bow.tres" id="5_nx2mj"]
 [ext_resource type="Resource" path="res://Scripts/Inventory/debug chest.tres" id="6_x11qd"]
+[ext_resource type="Resource" path="res://Scripts/Inventory/debug_item.tres" id="7_bv7pe"]
 [ext_resource type="Resource" path="res://Scripts/Inventory/debug helmet.tres" id="7_l4cla"]
 
 [sub_resource type="Resource" id="Resource_be7uh"]
@@ -30,7 +31,8 @@ amount = 1
 
 [sub_resource type="Resource" id="Resource_np8r5"]
 script = ExtResource("1_uvjgo")
-amount = 0
+item = ExtResource("7_bv7pe")
+amount = 1
 
 [sub_resource type="Resource" id="Resource_a33wg"]
 script = ExtResource("1_uvjgo")

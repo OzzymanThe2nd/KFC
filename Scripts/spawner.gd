@@ -17,6 +17,11 @@ func _ready() -> void:
 			
 
 func _on_body_entered(body: Node3D) -> void:
+	for i in enemies_list:
+		if not is_instance_valid(i):
+			enemies_list.erase(i)
+	if enemies_list.size() == 0:
+		spawned_enemies = 0
 	player = body
 	if $Timer.is_stopped():
 		$Timer.start()
@@ -40,11 +45,15 @@ func _on_enemy_death():
 
 
 func _on_timer_timeout() -> void:
-	if enemies_list.size() > 0:
+	if enemies_list.size() > 0 and player != null:
 		if player.position.distance_to(self.position) >= despawn_distance:
 			for i in enemies_list:
 				if i.position.distance_to(player.position) > 5:
 					enemies_list.erase(i)
 					i.queue_free()
+	if player == null:
+		for i in enemies_list:
+			enemies_list.erase(i)
 	elif enemies_list.size() == 0:
 		$Timer.stop()
+		spawned_enemies = 0
