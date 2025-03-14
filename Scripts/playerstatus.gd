@@ -1,5 +1,5 @@
 extends Node
-
+var level
 @export var strength = 1
 @export var healthmax = 25
 @export var healthcurrent = 25
@@ -73,6 +73,7 @@ func save_all(player):
 	var current_equiped = player.equipment
 	var save_file = FileAccess.open("user://savegame.save", FileAccess.WRITE)
 	var save_nodes = get_tree().get_nodes_in_group("Persist")
+	save_nodes.append_array(get_tree().get_nodes_in_group("Level"))
 	var self_save_data = save()
 	var self_json_string = JSON.stringify(self_save_data)
 	save_file.store_line(self_json_string)
@@ -105,7 +106,36 @@ func load_game():
 	get_tree().get_root().add_child(loading_image)
 	if not FileAccess.file_exists("user://savegame.save"):
 		return # Error! We don't have a save to load.
+	var save_file = FileAccess.open("user://savegame.save", FileAccess.READ)
+	var level_node = get_tree().get_nodes_in_group("Level")
+	for i in level_node:
+		print(i)
+		i.queue_free()
+	while save_file.get_position() < save_file.get_length():
+		var level_json_string = save_file.get_line()
 
+		# Creates the helper class to interact with JSON.
+		var level_json = JSON.new()
+
+		# Check if there is any error while parsing the JSON string, skip in case of failure.
+		var level_parse_result = level_json.parse(level_json_string)
+		if not level_parse_result == OK:
+			print("JSON Parse Error: ", level_json.get_error_message(), " in ", level_json_string, " at line ", level_json.get_error_line())
+			continue
+
+		# Get the data from the JSON object.
+		var node_data = level_json.data
+		if not node_data.keys().has("level"):
+			continue
+		else:
+			var new_object = load(node_data["filename"]).instantiate()
+			get_node(node_data["parent"]).add_child(new_object)
+			new_object.position = Vector3(node_data["pos_x"], node_data["pos_y"], node_data["pos_z"])
+			level = new_object
+			for i in node_data.keys():
+				if i == "filename" or i == "parent" or i == "pos_x" or i == "pos_y" or i == "pos_z":
+					continue
+				new_object.set(i, node_data[i])
 	# We need to revert the game state so we're not cloning objects
 	# during loading. This will vary wildly depending on the needs of a
 	# project, so take care with this step.
@@ -117,9 +147,10 @@ func load_game():
 	for i in save_nodes:
 		i.queue_free()
 	for i in 5: await get_tree().process_frame
+	save_file.seek(0)
 	# Load the file line by line and process that dictionary to restore
 	# the object it represents.
-	var save_file = FileAccess.open("user://savegame.save", FileAccess.READ)
+	#var save_file = FileAccess.open("user://savegame.save", FileAccess.READ)
 	while save_file.get_position() < save_file.get_length():
 		var json_string = save_file.get_line()
 
@@ -140,9 +171,12 @@ func load_game():
 			healthcurrent = node_data["healthcurrent"]
 			healthmax = node_data["healthmax"]
 			strength = node_data["strength"]
-		else:
+		elif not node_data.keys().has("level"):
 			var new_object = load(node_data["filename"]).instantiate()
-			get_node(node_data["parent"]).add_child(new_object)
+			if node_data["parent"] == "level":
+				level.add_child(new_object)
+			else:
+				get_node(node_data["parent"]).add_child(new_object)
 			new_object.position = Vector3(node_data["pos_x"], node_data["pos_y"], node_data["pos_z"])
 
 			# Now we set the remaining variables.

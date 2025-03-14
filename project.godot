@@ -33,6 +33,7 @@ enabled=PackedStringArray("res://addons/func_godot/plugin.cfg")
 
 spawner="Marker3Ds used to mark enemy spawns"
 Persist=""
+Level=""
 
 [input]
 

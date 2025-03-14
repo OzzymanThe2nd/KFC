@@ -1,8 +1,20 @@
 extends Node3D
 var paused_by_pause_menu : bool = false
 
-func _ready() -> void:
-	Playerstatus.load_game()
+#func _ready() -> void:
+	#Playerstatus.load_game()
+
+func save():
+	var save_dictionary = {
+		"level" : "test",
+		"filename" : get_scene_file_path(),
+		"parent" : get_parent().get_path(),
+		"pos_x" : position.x, 
+		"pos_y" : position.y,
+		"pos_z" : position.z,
+		"process_mode" : process_mode
+	}
+	return save_dictionary
 
 func _on_player_dead() -> void:
 	$Player/CamNode3D/CanvasLayer/Deathscreen.visible = true
@@ -19,3 +31,5 @@ func _input(event: InputEvent) -> void:
 				get_tree().paused = false
 				$"Pause Menu".visible = false
 				paused_by_pause_menu = false
+		if Input.is_action_just_pressed("0"):
+			print(get_children())

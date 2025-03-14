@@ -110,7 +110,7 @@ fog_light_color = Color(0.133333, 0.552941, 0.607843, 1)
 [sub_resource type="BoxShape3D" id="BoxShape3D_vnj3h"]
 size = Vector3(10, 15, 1)
 
-[node name="Node3D" type="Node3D"]
+[node name="Node3D" type="Node3D" groups=["Level"]]
 process_mode = 3
 script = ExtResource("1_3f4iv")
 
